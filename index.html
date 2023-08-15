@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="scripts/calculations.js"></script>
+	<title>Nel-S &bullet; EFC Calculator</title>
+</head>
+<body onload="initialize()">
+	<h1>EFC Calculator</h1>
+	<h3 id="subtitle">(Effective First-stage Continentalness)</h3>
+
+	<div>
+		<form>
+			<table class="options">
+				<tr>
+					<!-- Desired Distance button -->
+					<td><label for="desiredDist">Desired Distance</label></td>
+					<td>:</td>
+					<!-- Desired Continentalness button -->
+					<td><label for="desiredCont">Desired Continentalness</label></td>
+					<td>:</td>
+					<td colspan="2"><label for="suboctaves">Suboctaves less than</label></td>
+					<td>:</td>
+					<td><label for="multiply">Allow for Spawn Displacement</label></td>
+					<td>:</td>
+					<td><label for="multiply">Multiply by 10000 (for <a href="https://github.com/Cubitect/cubiomes">Cubiomes</a>/<a href="https://github.com/Cubitect/cubiomes-viewer">Cubiomes Viewer</a>)</label></td>
+				</tr>
+				<tr>
+					<td><input id="desiredDist" name="desired distance" type="number" min=0.0 max=2687.45 step=1.0 value=0 placeholder="Distance"></td>
+					<td></td>
+					<td><input id="desiredCont" name="desired continentalness" type="number" min=-3.65 max=0.0 step=0.01 value=0 placeholder="Cont."></td>
+					<td></td>
+					<td><input id="suboctaves" type="range" min=-3.65 max=3.65 step=0.05 value=-3.65></td>
+					<td id="suboctaveValue">(None)</td>
+					<td></td>
+					<td><input id="spawnDisplacement" type="checkbox"></td>
+					<td></td>
+					<td><input id="multiply" type="checkbox"></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div>
+		<small><a id="tableTop" href="#tableBottom">(To bottom of table)</a></small>
+	</div>
+
+	<div id="dataDiv">
+		<table id="data">
+			<tr> <th>No conditions are necessary.</th> </tr>
+		</table>
+	</div>
+	
+	<div>
+		<small><a id="tableBottom" href="#tableTop">(To top of table)</a></small>
+	</div>
+
+	<div>
+		<table class="options">
+			<tr>
+				<td rowspan="2">
+					<button id="copy" onclick="copyCubiomes()" disabled="true">Copy as Cubiomes Viewer Conditions</button>
+				</td>
+				<td class="cubiomesLabel"><label for="version">Version:</label></td>
+				<td>
+					<select id="version" name="Cubiomes version">
+						<option value="3d000000">3.x</option>
+						<option value="38000000">2.x</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="cubiomesLabel"><label for="startCountAt">Starting from Condition #:</label></td>
+				<td><input id="startCountAt" name="index to start from" type="number" min=1 max=99 step=1 value=1 placeholder="#"></td>
+			</tr>
+		</table>
+		<p id="status"></p>
+	</div>
+
+	<hr>
+	<article id="explanation">
+		<h3 id="explanationHeader">So what exactly is this?</h3>
+		<p>The spawn algorithm for <i>Minecraft: Java Edition</i>, in versions 1.18 and beyond, is primarily concerned with "fitness". First the algorithm checks 66 exact points, assigns each point a fitness score, and selects the one with the lowest score; then it repeats the process with 962 more points centered around whichever point was chosen. (Then it nudges the spawnpoint onto the first sky-exposed, top-solid, non-waterlogged block it finds, but that doesn't involve any fitness calculations.)</p>
+		<p>Now, the game uses two attributes to calculate each point's fitness:</p>
+		<ol>
+			<li>The point's <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean distance</a> from the origin, and</li>
+			<li>The climate values at that point if they are beyond particular thresholds (if they are "extreme" enough). The game actually examines all five climates when calculating this, but negative continentalness (which causes oceans or mushroom islands to generate) has a disproportionate impact on the fitness algorithm compared to every other climate, and most of the time the other climate values are "mild" enough that we can assume they won't significantly impact the fitnesses.</li>
+		</ol>
+		<p>Since those are the two (primary) metrics that are used, if one wants to spawn at a particular distance from the origin or at a particular continentalness, that point will have its own corresponding fitness value, which the algorithm ultimately needs to choose as best in order to actually spawn there (ignoring the spawn nudging unless Allow for Spawn Displacement is checked). That means none of the other 66 points the game samples in the first stage, or 962 points it samples in the second stage, can have lower fitness values than the desired location; otherwise the player would simply spawn at the lower-fitness location instead. Therefore, one's desired spawnpoint creates a bound on what every sampled point's lowest possible fitness can be, and since the same 66 coordinates are checked every time in the first stage, the Euclidean distance portion of the fitness calculations can be factored out to produce a hard limit on the highest possible continentalness a point can have and still allow for the spawn one wants&mdash;a limit on the point's Effective First-stage Continentalness values. (And therefore when searching for seeds, any seed having a point with a continentalness value more positive than the limits above can be immediately discarded.)</p>
+
+		<p>A couple other notes:</p>
+		<ul>
+			<li>The continentalness value limits are a necessary, but not sufficient, condition. Not every world with continentalness values below the limits will produce the type of spawn one wants; but any world with a continentalness value <i>not</i> below the limits is guaranteed not to.</li>
+			<li>Since the last part of the spawn algorithm (the nudging part) can move the spawnpoint independently of the fitness levels, it's possible to obtain farther spawns even with continentalness values that in theory should disqualify it. One can factor that in with the Allow for Spawn Displacement checkbox, but one should make sure the greater accuracy is worth the slower search speed and the greater number of false positives.</li>
+			<li>Since the other four climates are also sampled and factored in when calculating a point's fitness, a minority of seeds will still have farther spawnpoints regardless of the continentalness values, due to the "extremeness" of those climates. There is no way for this model to take that into account, but in practice that should be a small percentage of seeds at most.</li>
+			<li>Currently, in version 3.x, Cubiomes Viewer accidentally omits the last four continentalness octaves from the Locate Climate Extreme condition.</li>
+		</ul>
+	</article>
+	<p><small>Created by Nel. S. (<a href="https://github.com/Nel-S">GitHub</a>)</small></p>
+</body>
+</html>
