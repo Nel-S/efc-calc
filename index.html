@@ -82,7 +82,7 @@
 	<hr>
 	<article id="explanation">
 		<h3 id="explanationHeader">So what exactly is this?</h3>
-		<p>The spawn algorithm for <i>Minecraft: Java Edition</i>, in versions 1.18 and beyond, is primarily concerned with "fitness". First the algorithm checks 66 exact points, assigns each point a fitness score, and selects the one with the lowest score; then it repeats the process with 962 more points centered around whichever point was chosen. (Then it nudges the spawnpoint onto the first sky-exposed, top-solid, non-waterlogged block it finds, but that doesn't involve any fitness calculations.)</p>
+		<p>The spawn algorithm for <i>Minecraft: Java Edition</i>, in versions 1.18 and beyond, is primarily concerned with "fitness". First the algorithm checks 66 exact points, assigns each point a fitness score, and selects the one with the lowest score; then it repeats the process with 862 more points centered around whichever point was chosen. (Then it attempts to nudge the spawnpoint onto the first sky-exposed, top-solid, non-waterlogged block it can find, but that doesn't involve any fitness calculations.)</p>
 		<p>Now, the game uses two attributes to calculate each point's fitness:</p>
 		<ol>
 			<li>The point's <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean distance</a> from the origin, and</li>
