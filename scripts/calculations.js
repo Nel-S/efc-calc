@@ -15,19 +15,19 @@ const POINTS = [
 	{coord: "(465, -213)" , fitness: 175184.43734016, cubiomesCoord: "74000000caffffff"},
 	{coord: "(0, 512)"    , fitness: 175921.86044416, cubiomesCoord: "0000000080000000"},
 	// Second ring
-	{coord: "(-1000, -215)", fitness: 2802142, cubiomesCoord: "06ffffffcaffffff"},
-	{coord: "(-981, 290)"  , fitness: 2803406, cubiomesCoord: "0affffff48000000"},
-	{coord: "(490, 898)"   , fitness: 2803636, cubiomesCoord: "7a000000e0000000"},
-	{coord: "(-774, -669)" , fitness: 2804349, cubiomesCoord: "3effffff58ffffff"},
-	{coord: "(-359, -958)" , fitness: 2804392, cubiomesCoord: "a6ffffff10ffffff"},
-	{coord: "(144, -1013)" , fitness: 2805785, cubiomesCoord: "2400000002ffffff"},
-	{coord: "(-722, 725)"  , fitness: 2805807, cubiomesCoord: "4bffffffb5000000"},
-	{coord: "(612, -820)"  , fitness: 2805994, cubiomesCoord: "9900000033ffffff"},
-	{coord: "(861, 553)"   , fitness: 2806991, cubiomesCoord: "d70000008a000000"},
-	{coord: "(1021, 72)"   , fitness: 2809646, cubiomesCoord: "ff00000012000000"},
-	{coord: "(-286, 983)"  , fitness: 2812114, cubiomesCoord: "b8fffffff5000000"},
-	{coord: "(931, -426)"  , fitness: 2812930, cubiomesCoord: "e800000095ffffff"},
-	{coord: "(0, 1024)"    , fitness: 2814749, cubiomesCoord: "0000000000010000"},
+	{coord: "(-1000, -215)", fitness: 2802142.0816    , cubiomesCoord: "06ffffffcaffffff"},
+	{coord: "(-981, 290)"  , fitness: 2803406.39877376, cubiomesCoord: "0affffff48000000"},
+	{coord: "(490, 898)"   , fitness: 2803636.79236096, cubiomesCoord: "7a000000e0000000"},
+	{coord: "(-774, -669)" , fitness: 2804349.46500864, cubiomesCoord: "3effffff58ffffff"},
+	{coord: "(-359, -958)" , fitness: 2804392.335424  , cubiomesCoord: "a6ffffff10ffffff"},
+	{coord: "(144, -1013)" , fitness: 2805785.802304  , cubiomesCoord: "2400000002ffffff"},
+	{coord: "(-722, 725)"  , fitness: 2805807.24295936, cubiomesCoord: "4bffffffb5000000"},
+	{coord: "(612, -820)"  , fitness: 2805994.85218816, cubiomesCoord: "9900000033ffffff"},
+	{coord: "(861, 553)"   , fitness: 2806991.966464  , cubiomesCoord: "d70000008a000000"},
+	{coord: "(1021, 72)"   , fitness: 2809646.44      , cubiomesCoord: "ff00000012000000"},
+	{coord: "(-286, 983)"  , fitness: 2812114.348096  , cubiomesCoord: "b8fffffff5000000"},
+	{coord: "(931, -426)"  , fitness: 2812930.06891264, cubiomesCoord: "e800000095ffffff"},
+	{coord: "(0, 1024)"    , fitness: 2814749.76710656, cubiomesCoord: "0000000000010000"},
 	// Third ring
 	{coord: "(-1472, 435)"  , fitness: 14209992, cubiomesCoord: "90feffff6c000000"},
 	{coord: "(-1426, -568)" , fitness: 14211090, cubiomesCoord: "9bfeffff72ffffff"},
@@ -47,7 +47,7 @@ const POINTS = [
 	{coord: "(-1534, -70)"  , fitness: 14234695, cubiomesCoord: "80feffffeeffffff"},
 	{coord: "(-888, 1253)"  , fitness: 14240696, cubiomesCoord: "22ffffff39010000"},
 	{coord: "(702, -1366)"  , fitness: 14243196, cubiomesCoord: "af000000aafeffff"},
-	{coord: "(0, 1536)"     , fitness: 14249670, cubiomesCoord: "0000000080010000"},
+	{coord: "(0, 1536)"     , fitness: 14249670.69597696, cubiomesCoord: "0000000080010000"},
 	// Fourth ring
 	{coord: "(781, -1892)"  , fitness: 44935571, cubiomesCoord: "c300000027feffff"},
 	{coord: "(-1549, -1338)", fitness: 44936000, cubiomesCoord: "7cfeffffb1feffff"},
@@ -74,12 +74,33 @@ const POINTS = [
 	{coord: "(-1759, 1048)" , fitness: 44994795, cubiomesCoord: "48feffff06010000"},
 	{coord: "(1862, -852)"  , fitness: 45006881, cubiomesCoord: "d10100002bffffff"},
 	{coord: "(2015, -365)"  , fitness: 45017658, cubiomesCoord: "f7010000a4ffffff"},
-	{coord: "(0, 2048)"     , fitness: 45035996, cubiomesCoord: "0000000000020000"},
-
+	{coord: "(0, 2048)"     , fitness: 45035996.27370496, cubiomesCoord: "0000000000020000"},
 ];
 
+// The maximum possible amplitude of a single Perlin noise octave.
+const MAX_PERLIN_AMPLITUDE = 1.0363538112118025;
+
 // The maximum value all continentalness suboctaves after the ith one can sum to (times the climate's fixed amplitude of 3/2).
-const MAX_OCTAVE_AMPLITUDE_SUMS = [1485/511, 1101/511, 909/511, 717/511, 75/73, 333/511, 237/511, 141/511, 93/511, 45/511, 33/511, 3/73, 15/511, 9/511, 6/511, 3/511, 3/1022, 0];
+const MAX_OCTAVE_AMPLITUDE_SUMS = [
+	1485/511 * MAX_PERLIN_AMPLITUDE,
+	1101/511 * MAX_PERLIN_AMPLITUDE,
+	909/511  * MAX_PERLIN_AMPLITUDE,
+	717/511  * MAX_PERLIN_AMPLITUDE,
+	75/73    * MAX_PERLIN_AMPLITUDE,
+	333/511  * MAX_PERLIN_AMPLITUDE,
+	237/511  * MAX_PERLIN_AMPLITUDE,
+	141/511  * MAX_PERLIN_AMPLITUDE,
+	93/511   * MAX_PERLIN_AMPLITUDE,
+	45/511   * MAX_PERLIN_AMPLITUDE,
+	33/511   * MAX_PERLIN_AMPLITUDE,
+	3/73     * MAX_PERLIN_AMPLITUDE,
+	15/511   * MAX_PERLIN_AMPLITUDE,
+	9/511    * MAX_PERLIN_AMPLITUDE,
+	6/511    * MAX_PERLIN_AMPLITUDE,
+	3/511    * MAX_PERLIN_AMPLITUDE,
+	3/1022   * MAX_PERLIN_AMPLITUDE,
+	0        * MAX_PERLIN_AMPLITUDE,
+];
 
 // The possible headers of the table for when points need to be displayed.
 const TABLE_HEADER_NO_SUBOCTAVES = "<tr> <th>Coordinate</th> <th>Most Positive Continentalness</th> </tr>";
@@ -233,10 +254,7 @@ function copyCubiomes() {
 	for (let r = 1; r < table.rows.length; ++r) {
 		var row = table.rows[r];
 		// If condition gets higher than 99, Cubiomes Viewer can't display it, so exit
-		if (conditionIndex > 99) {
-			document.getElementById("status").innerText = "(Added " + (conditionIndex - initConditionIndex) + "/" + (table.rows.length - 1) + " conditions due to Cubiomes Viewer's space limits.)";
-			break;
-		};
+		if (conditionIndex > 99) break;
 		// Updates currentCoord if the current row's coordinate doesn't match
 		while (POINTS[currentCoord].coord != row.cells[0].innerText) ++currentCoord;
 		// Appends #Cond: , the version (Locate Climate Extreme for 3.x, Climate Parameters for 2.x) and encoded coordinates
@@ -283,6 +301,7 @@ function copyCubiomes() {
 		conditions += condition + "\n";
 		++conditionIndex;
 	}
-	// Then copies final conditions list to clipboard
+	// Then copies final conditions list to clipboard, and prints the the number of conditions copied
 	navigator.clipboard.writeText(conditions);
+	document.getElementById("status").innerText = "(Copied " + (conditionIndex - initConditionIndex) + "/" + (table.rows.length - 1) + " conditions" + (conditionIndex > 99 ? " due to Cubiomes Viewer's space limits" : "") + ".)";
 }
